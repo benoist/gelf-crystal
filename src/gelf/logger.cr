@@ -93,6 +93,9 @@ module GELF
       else
         @sender.write(data)
       end
+    rescue e : Errno
+      puts "Error sending log to server: #{e.message}"
+      p message
     end
 
     private def serialize_message(message)
