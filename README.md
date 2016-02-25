@@ -21,6 +21,7 @@ require "gelf"
 logger ||= GELF::Logger.new("localhost", port, "WAN").configure do |config|
   config.facility = "gelf-cr"
   config.host     = "localhost"
+  config.level    = Logger::DEBUG
 end
 
 logger.debug("some debug message")
