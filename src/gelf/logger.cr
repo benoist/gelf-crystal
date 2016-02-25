@@ -5,7 +5,6 @@ module GELF
 
     def initialize(host, port, @max_size = :wan)
       @sender = UdpSender.new(host, port)
-      @last_chunk_id = 0
     end
 
     def max_chunk_size
