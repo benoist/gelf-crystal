@@ -1,32 +1,33 @@
 # gelf
 
-TODO: Write a description here
+A GELF compatible logger http://docs.graylog.org/en/latest/pages/gelf.html
 
 ## Installation
-
 
 Add this to your application's `shard.yml`:
 
 ```yaml
 dependencies:
   gelf:
-    github: [your-github-name]/gelf
+    github: benoist/gelf-crystal
 ```
 
 
 ## Usage
 
-
 ```crystal
 require "gelf"
+
+logger ||= GELF::Logger.new("localhost", port, "WAN").configure do |config|
+  config.facility = "gelf-cr"
+  config.host     = "localhost"
+end
+
+logger.debug("some debug message")
+logger.info("some info message")
+
+logger.debug({ "short_message" => "some short message", "_extra_var" => "some var"}) # also set the short message
 ```
-
-
-TODO: Write usage instructions here
-
-## Development
-
-TODO: Write development instructions here
 
 ## Contributing
 
@@ -35,7 +36,3 @@ TODO: Write development instructions here
 3. Commit your changes (git commit -am 'Add some feature')
 4. Push to the branch (git push origin my-new-feature)
 5. Create a new Pull Request
-
-## Contributors
-
-- [[your-github-name]](https://github.com/[your-github-name]) Benoist - creator, maintainer
