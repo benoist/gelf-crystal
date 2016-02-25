@@ -5,9 +5,11 @@ module GELF
 
     property! :facility
     property! :host
+    property! :level
 
     def initialize(host, port, @max_size = :wan)
       @sender = UdpSender.new(host, port)
+      @level = Severity::INFO
     end
 
     def max_chunk_size
@@ -53,6 +55,8 @@ module GELF
     end
 
     private def notify_with_level(level, message : Hash(String, (String | Int::Signed | Int::Unsigned | Float64 | Bool)))
+      return unless level >= @level
+
       message["version"] = "1.1"
       message["host"] = host
       message["level"] = GELF::LOGGER_MAPPING[level]

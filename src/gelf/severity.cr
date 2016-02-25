@@ -8,12 +8,12 @@ module GELF
   # generating GELF message, using defined mapping.
 
   enum Severity
+    DEBUG
     INFO
     WARN
-    UNKNOWN
     ERROR
     FATAL
-    DEBUG
+    UNKNOWN
   end
 
   LOGGER_MAPPING = {

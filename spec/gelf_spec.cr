@@ -18,6 +18,7 @@ class UDPListener
     @logger ||= GELF::Logger.new("localhost", port, "WAN").configure do |config|
       config.facility = "gelf-cr"
       config.host     = "localhost"
+      config.level = GELF::Severity::DEBUG
     end
   end
 
@@ -93,6 +94,28 @@ describe GELF do
       json["short_message"].should eq "test"
       json["_facility"].should eq "gelf-cr"
       json["timestamp"]
+    end
+  end
+
+  it "allows setting the severity level" do
+    UDPListener.listen do |listener|
+      logger = listener.logger
+      logger.level = GELF::Severity::INFO
+      logger.info?.should eq true
+
+      logger.debug?.should eq false
+      logger.level = GELF::Severity::DEBUG
+      logger.debug?.should eq true
+    end
+  end
+
+  it "only logs messages that have the corrent severity level" do
+    UDPListener.listen do |listener|
+      listener.logger.level = GELF::Severity::INFO
+      listener.logger.debug("debug")
+      listener.logger.info("info")
+
+      listener.get_json["level"].should eq 6
     end
   end
 
