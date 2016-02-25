@@ -9,7 +9,7 @@ module GELF
 
     def initialize(host, port, @max_size = :wan)
       @sender = UdpSender.new(host, port)
-      @level = Severity::INFO
+      @level = ::Logger::INFO
     end
 
     def max_chunk_size
@@ -28,19 +28,19 @@ module GELF
 
     {% for level in ["DEBUG", "INFO", "WARN", "ERROR", "FATAL", "UNKNOWN"] %}
       def {{level.id.downcase}}(message : HashType, progname = nil : String?)
-        add(GELF::Severity::{{level.id}}, message, progname)
+        add(Logger::{{level.id}}, message, progname)
       end
 
       def {{level.id.downcase}}(message : String, progname = nil : String?)
-        add(GELF::Severity::{{level.id}}, message, progname)
+        add(Logger::{{level.id}}, message, progname)
       end
 
       def {{level.id.downcase}}(progname = nil : String?)
-          add(GELF::Severity::{{level.id}}, yield, progname)
+          add(Logger::{{level.id}}, yield, progname)
       end
 
       def {{level.id.downcase}}?
-        GELF::Severity::{{level.id}} >= level
+        Logger::{{level.id}} >= level
       end
     {% end %}
 
@@ -55,7 +55,7 @@ module GELF
     end
 
     private def notify_with_level(level, message : Hash(String, (String | Int::Signed | Int::Unsigned | Float64 | Bool)))
-      return unless level >= @level
+      return if level < @level
 
       message["version"] = "1.1"
       message["host"] = host

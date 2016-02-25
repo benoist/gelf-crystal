@@ -7,21 +7,12 @@ module GELF
   # For compatibility we define our constants as Ruby Logger, and convert values before
   # generating GELF message, using defined mapping.
 
-  enum Severity
-    DEBUG
-    INFO
-    WARN
-    ERROR
-    FATAL
-    UNKNOWN
-  end
-
   LOGGER_MAPPING = {
-    Severity::DEBUG   => 7, # Debug
-    Severity::INFO    => 6, # Info
-    Severity::WARN    => 5, # Notice
-    Severity::ERROR   => 4, # Warning
-    Severity::FATAL   => 3, # Error
-    Severity::UNKNOWN => 1,
+    ::Logger::DEBUG   => 7, # Debug
+    ::Logger::INFO    => 6, # Info
+    ::Logger::WARN    => 5, # Notice
+    ::Logger::ERROR   => 4, # Warning
+    ::Logger::FATAL   => 3, # Error
+    ::Logger::UNKNOWN => 1,
   } # Alert – shouldn't be used
 end
