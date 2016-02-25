@@ -122,6 +122,13 @@ describe GELF do
     end
   end
 
+  it "allows loggin with a block" do
+    UDPListener.listen do |listener|
+      listener.logger.debug { "test" }
+      listener.get_json["short_message"].should eq "test"
+    end
+  end
+
   it "logs a default short_message when missing" do
     UDPListener.listen do |listener|
       listener.logger.debug({ "_extra_var" => 10 })
