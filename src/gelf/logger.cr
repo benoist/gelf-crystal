@@ -27,15 +27,15 @@ module GELF
     end
 
     {% for level in ["DEBUG", "INFO", "WARN", "ERROR", "FATAL", "UNKNOWN"] %}
-      def {{level.id.downcase}}(message : HashType, progname = nil : String?)
+      def {{level.id.downcase}}(message : HashType, progname : String? = nil)
         add(Logger::{{level.id}}, message, progname)
       end
 
-      def {{level.id.downcase}}(message : String, progname = nil : String?)
+      def {{level.id.downcase}}(message : String, progname : String? = nil)
         add(Logger::{{level.id}}, message, progname)
       end
 
-      def {{level.id.downcase}}(progname = nil : String?)
+      def {{level.id.downcase}}(progname : String? = nil)
           add(Logger::{{level.id}}, yield, progname)
       end
 
@@ -44,11 +44,11 @@ module GELF
       end
     {% end %}
 
-    private def add(level, message : Hash(String, (String | Int::Signed | Int::Unsigned | Float64 | Bool)), progname = nil : String?)
+    private def add(level, message : Hash(String, (String | Int::Signed | Int::Unsigned | Float64 | Bool)), progname : String? = nil)
       notify_with_level(level, message.merge({"_facility" => progname || facility}))
     end
 
-    private def add(level, message : String, progname = nil : String?)
+    private def add(level, message : String, progname : String? = nil)
       hash = {} of String => (String | Int::Signed | Int::Unsigned | Float64 | Bool)
       hash["short_message"] = message
       add(level, hash, progname)

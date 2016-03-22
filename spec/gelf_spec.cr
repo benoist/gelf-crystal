@@ -11,13 +11,13 @@ class UDPListener
   end
 
   def port
-    @server.addr.ip_port
+    @server.local_address.port
   end
 
   def logger
     @logger ||= GELF::Logger.new("localhost", port, "WAN").configure do |config|
       config.facility = "gelf-cr"
-      config.host     = "localhost"
+      config.host = "localhost"
       config.level = Logger::DEBUG
     end
   end
@@ -29,10 +29,10 @@ class UDPListener
   end
 
   def get_json
-    slice   = read_buffer
-    io      = MemoryIO.new(slice)
+    slice = read_buffer
+    io = MemoryIO.new(slice)
     inflate = Zlib::Inflate.new(io)
-    str     = String::Builder.build do |builder|
+    str = String::Builder.build do |builder|
       IO.copy(inflate, builder)
     end
     JSON.parse(str)
@@ -75,7 +75,7 @@ describe GELF do
       io.rewind
 
       inflate = Zlib::Inflate.new(io)
-      str     = String::Builder.build do |builder|
+      str = String::Builder.build do |builder|
         IO.copy(inflate, builder)
       end
       JSON.parse(str)["short_message"].should eq (1..1200).to_a.to_s
@@ -138,7 +138,7 @@ describe GELF do
 
   it "allows logging with extra parameters" do
     UDPListener.listen do |listener|
-      listener.logger.debug({ "short_message" => "test", "_extra_var" => 10 })
+      listener.logger.debug({"short_message" => "test", "_extra_var" => 10})
       json = listener.get_json
       json["short_message"].should eq "test"
       json["_extra_var"].should eq 10
@@ -154,11 +154,10 @@ describe GELF do
 
   it "logs a default short_message when missing" do
     UDPListener.listen do |listener|
-      listener.logger.debug({ "_extra_var" => 10 })
+      listener.logger.debug({"_extra_var" => 10})
       json = listener.get_json
       json["short_message"].should eq "Message must be set!"
       json["_extra_var"].should eq 10
     end
   end
-
 end
