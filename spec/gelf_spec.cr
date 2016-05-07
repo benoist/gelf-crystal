@@ -5,6 +5,8 @@ class UDPListener
     yield new
   end
 
+  @logger : GELF::Logger?
+
   def initialize
     @server = UDPSocket.new(Socket::Family::INET6)
     @server.bind("::", 0)
@@ -15,7 +17,7 @@ class UDPListener
   end
 
   def logger
-    @logger ||= GELF::Logger.new("localhost", port, "WAN").configure do |config|
+    @logger ||= GELF::Logger.new("localhost", port, :wan).configure do |config|
       config.facility = "gelf-cr"
       config.host = "localhost"
       config.level = Logger::DEBUG

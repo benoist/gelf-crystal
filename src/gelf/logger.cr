@@ -3,9 +3,9 @@ module GELF
     alias HashType = Hash(String, (String | Int::Signed | Int::Unsigned | Float64 | Bool))
     alias MessageType = (Hash(String, (String | Int::Signed | Int::Unsigned | Float64 | Bool)) | String)
 
-    property! :facility
-    property! :host
-    property! :level
+    property! facility : String
+    property! host : String
+    property level : Logger::Severity
 
     def initialize(host, port, @max_size = :wan)
       @sender = UdpSender.new(host, port)
